@@ -11,8 +11,8 @@ pool:
 
 
 stages:
-- stage: Build springboot Application
-  displayName: Build springboot Application
+- stage: Build_springboot_Application
+  displayName: Build_springboot_Application
   jobs:
   - job: Build
     displayName: Build
