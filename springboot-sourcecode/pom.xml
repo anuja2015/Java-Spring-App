@@ -8,11 +8,11 @@
 		<version>3.4.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.canara</groupId>
+	<groupId>com.project1</groupId>
 	<artifactId>springbootapp</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>springbootapp</name>
-	<description>Demo project for dockercompose</description>
+	<description>Demo project for Azure App Service</description>
 	<url/>
 	<licenses>
 		<license/>
