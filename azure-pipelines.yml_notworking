@@ -1,0 +1,68 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  name: Default
+
+
+stages:
+
+     
+- stage: Build_springboot_Application
+  displayName: Build_springboot_Application
+  jobs:
+  - job: Build
+    displayName: Build
+    steps:
+    - task: Maven@4
+      inputs:
+        mavenPomFile: 'springboot-sourcecode/pom.xml'
+        goals: 'clean package'
+        publishJUnitResults: true
+        testResultsFiles: '**/surefire-reports/TEST-*.xml'
+        javaHomeOption: 'Path'
+        jdkDirectory: '/usr/lib/jvm/java-17-openjdk-amd64'
+        mavenVersionOption: 'Path'
+        mavenDirectory: '/usr/share/maven'
+        mavenSetM2Home: true
+        mavenAuthenticateFeed: false
+        effectivePomSkip: false
+        sonarQubeRunAnalysis: false
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.SourcesDirectory)/springboot-sourcecode/target/springboot-app01.jar'
+        ArtifactName: 'drop'
+        publishLocation: 'Container'
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: '$(Build.SourcesDirectory)/springboot-sourcecode/target/springboot-app01.jar'
+        artifact: 'springbootapp'
+        publishLocation: 'pipeline'
+- stage: Deploy_to_App_Service
+  jobs:
+  - deployment: 
+    environment: "springweb"
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureRmWebAppDeployment@5
+            inputs:
+              ConnectionType: 'AzureRM'
+              azureSubscription: 'app-service-connection'
+              appType: 'webAppLinux'
+              WebAppName: 'springweb'
+              packageForLinux: '$(Pipeline.Workspace)/springbootapp/springboot-app01.jar'
+              RuntimeStack: 'TOMCAT:10.0-java17'
+              AppSettings: '-Port 3010'
+              DeploymentTypeLinux: 'oneDeploy'
+
+
+          
+              
+
